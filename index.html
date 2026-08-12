@@ -356,7 +356,7 @@
                 }
                 setMetaLoginStatus('connecting');
 
-                window.FB.login((response) => {
+                window.FB.login(function(response) {     // login logic }, { scope: 'public_profile,email' });((response) => {
                     if (response.authResponse) {
                         handleMetaLoginSuccess(response.authResponse);
                     } else {
@@ -534,7 +534,7 @@
                                     </div>
                                     <div>
                                         <h3 className="text-lg font-bold text-white">HTTPS Required for Meta OAuth</h3>
-                                        <p className="text-xs text-amber-300">Meta enforces HTTPS policy for live FB.login popup</p>
+                                        <p className="text-xs text-amber-300">Meta enforces HTTPS policy for live FB.login(function(response) {     // login logic }, { scope: 'public_profile,email' }); popup</p>
                                     </div>
                                 </div>
 
