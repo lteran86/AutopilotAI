@@ -32,6 +32,9 @@
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
+    <!-- Auth0 SPA SDK -->
+    <script src="https://cdn.auth0.com/js/auth0-spa-js/2.1/auth0-spa-js.production.js"></script>
+
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
@@ -82,6 +85,10 @@
 
         // Meta Developer App ID
         const META_APP_ID = '1598454531681394';
+        
+        // Auth0 Configuration
+        const AUTH0_DOMAIN = 'dev-4yzidotc02ri7l4l.us.auth0.com';
+        const AUTH0_CLIENT_ID = 'YOUR_AUTH0_APPLICATION_CLIENT_ID';
 
         // Initial default posts
         const INITIAL_POSTS = [
@@ -171,7 +178,7 @@
             const [accounts, setAccounts] = useState({
                 facebook: { connected: false, pageName: '', followers: '0', accessToken: null, id: null },
                 instagram: { connected: false, handle: '', followers: '0', accessToken: null, id: null },
-                linkedin: { connected: true, companyName: 'Stripe Inc.', followers: '512K' },
+                linkedin: { connected: false, companyName: '', followers: '0' },
                 tiktok: { connected: false, handle: '@stripe_official', followers: '24K' }
             });
 
@@ -324,6 +331,7 @@
             };
 
             useEffect(() => {
+                // Initialize Meta SDK
                 window.fbAsyncInit = function() {
                     if (window.FB) {
                         window.FB.init({
@@ -342,7 +350,59 @@
                         }
                     }
                 };
+
+                // Initialize Auth0 Client
+                async function initAuth0() {
+                    if (window.auth0) {
+                        const auth0Client = await window.auth0.createAuth0Client({
+                            domain: AUTH0_DOMAIN,
+                            clientId: AUTH0_CLIENT_ID,
+                            authorizationParams: {
+                                redirect_uri: window.location.origin
+                            }
+                        });
+
+                        // Handle return from Auth0 login
+                        if (window.location.search.includes('code=') && window.location.search.includes('state=')) {
+                            await auth0Client.handleRedirectCallback();
+                            window.history.replaceState({}, document.title, window.location.pathname);
+                            const user = await auth0Client.getUser();
+                            
+                            setAccounts(prev => ({
+                                ...prev,
+                                linkedin: {
+                                    connected: true,
+                                    companyName: user.name || 'LinkedIn User',
+                                    followers: 'Active'
+                                }
+                            }));
+                            showToast(`Connected as ${user.name}`);
+                        }
+                    }
+                }
+
+                initAuth0();
             }, []);
+
+            // Auth0 LinkedIn Connection trigger
+            const connectLinkedIn = async () => {
+                if (!window.auth0) return;
+                
+                const auth0Client = await window.auth0.createAuth0Client({
+                    domain: AUTH0_DOMAIN,
+                    clientId: AUTH0_CLIENT_ID,
+                    authorizationParams: {
+                        redirect_uri: window.location.origin,
+                        connection: 'linkedin'
+                    }
+                });
+
+                await auth0Client.loginWithRedirect({
+                    authorizationParams: {
+                        connection: 'linkedin'
+                    }
+                });
+            };
 
             const connectMetaOAuth = () => {
                 if (window.location.protocol !== 'https:') {
@@ -449,6 +509,12 @@
                 if (key === 'facebook' || key === 'instagram') {
                     if (!accounts[key].connected) {
                         connectMetaOAuth();
+                        return;
+                    }
+                }
+                if (key === 'linkedin') {
+                    if (!accounts.linkedin.connected) {
+                        connectLinkedIn();
                         return;
                     }
                 }
