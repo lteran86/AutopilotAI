@@ -357,6 +357,7 @@
                         const auth0Client = await window.auth0.createAuth0Client({
                             domain: AUTH0_DOMAIN,
                             clientId: AUTH0_CLIENT_ID,
+                            cacheLocation: 'localstorage',
                             authorizationParams: {
                                 redirect_uri: window.location.origin
                             }
@@ -364,19 +365,26 @@
 
                         // Handle return from Auth0 login
                         if (window.location.search.includes('code=') && window.location.search.includes('state=')) {
-                            await auth0Client.handleRedirectCallback();
-                            window.history.replaceState({}, document.title, window.location.pathname);
-                            const user = await auth0Client.getUser();
-                            
-                            setAccounts(prev => ({
-                                ...prev,
-                                linkedin: {
-                                    connected: true,
-                                    companyName: user.name || 'LinkedIn User',
-                                    followers: 'Active'
-                                }
-                            }));
-                            showToast(`Connected as ${user.name}`);
+                            try {
+                                await auth0Client.handleRedirectCallback();
+                                window.history.replaceState({}, document.title, window.location.pathname);
+                                const user = await auth0Client.getUser();
+                                
+                                setAccounts(prev => ({
+                                    ...prev,
+                                    linkedin: {
+                                        connected: true,
+                                        companyName: user.name || 'LinkedIn User',
+                                        followers: 'Active'
+                                    }
+                                }));
+                                setActiveTab('accounts');
+                                showToast(`Connected as ${user.name}`);
+                            } catch (err) {
+                                console.error("Auth0 Callback Error:", err);
+                                showToast(`Login error: ${err.message}`);
+                                window.history.replaceState({}, document.title, window.location.pathname);
+                            }
                         }
                     }
                 }
@@ -391,6 +399,7 @@
                 const auth0Client = await window.auth0.createAuth0Client({
                     domain: AUTH0_DOMAIN,
                     clientId: AUTH0_CLIENT_ID,
+                    cacheLocation: 'localstorage',
                     authorizationParams: {
                         redirect_uri: window.location.origin,
                         connection: 'linkedin'
