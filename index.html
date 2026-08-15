@@ -91,7 +91,7 @@
                 postType: 'Thought Leadership',
                 status: 'Scheduled',
                 scheduledTime: 'Today, 2:30 PM',
-                copy: "🚀 Scaling software shouldn't mean multiplying complexity. We analyzed how modern dev teams reduce pipeline friction by 40% using automated workflow orchestration.\n\nKey takeaways:\n1️⃣ Shift testing left with zero-config preview environments\n2️⃣ Automate dependency vulnerability patching\n3️⃣ Unify deployments under single-pane observability",
+                copy: "🚀 Scaling software shouldn't mean multiplying complexity. We analyzed how modern dev teams reduce pipeline friction by 40% using automated workflow orchestration.\n\nKey takeaways: automation, observability, and clear ownership reduce errors and release time.",
                 hashtags: ['#DevOps', '#SoftwareEngineering', '#CloudArchitecture', '#TechInnovation', '#Productivity'],
                 imageUrl: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=800&q=80',
                 imagePrompt: 'A sleek modern tech dashboard with dark mode UI, glowing data visualization graphs, isometric 3D render, minimalist cyan and violet lighting',
@@ -265,7 +265,7 @@
                         postType: 'Thought Leadership',
                         status: 'Scheduled',
                         scheduledTime: 'Today, 3:00 PM',
-                        copy: `🚀 Modern digital experiences demand speed and reliability. At ${companyDisplayName}, we've streamlined core operations so teams can scale effortlessly without operational bottlenecks.\n\nKey takeaways:\n1️⃣ Automated workflow orchestration\n2️⃣ Enterprise-grade security and reliability\n3️⃣ Seamless API-first integrations`,
+                        copy: `🚀 Modern digital experiences demand speed and reliability. At ${companyDisplayName}, we've streamlined core operations so teams can scale effortlessly without operational debt. Key takeaway: automation + observability = faster delivery.`,
                         hashtags: [`#${companyDisplayName}`, '#TechInnovation', '#SoftwareEngineering', '#Productivity', '#FutureOfWork'],
                         imageUrl: `https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=800&q=80`,
                         imagePrompt: `A sleek modern tech dashboard for ${companyDisplayName} with dark mode UI, glowing cyan data visualization`,
@@ -356,8 +356,8 @@
                 }
                 setMetaLoginStatus('connecting');
 
-                window.FB.login(function(response) {     // login logic }, { scope: 'public_profile,email' });((response) => {
-                    if (response.authResponse) {
+                window.FB.login(function(response) {
+                    if (response && response.authResponse) {
                         handleMetaLoginSuccess(response.authResponse);
                     } else {
                         setMetaLoginStatus('disconnected');
@@ -534,7 +534,7 @@
                                     </div>
                                     <div>
                                         <h3 className="text-lg font-bold text-white">HTTPS Required for Meta OAuth</h3>
-                                        <p className="text-xs text-amber-300">Meta enforces HTTPS policy for live FB.login(function(response) {     // login logic }, { scope: 'public_profile,email' }); popup</p>
+                                        <p className="text-xs text-amber-300">Meta enforces HTTPS policy for live FB.login popup</p>
                                     </div>
                                 </div>
 
